@@ -9,8 +9,10 @@ namespace Player {
         private CharacterController _characterController;
         public float MoveSpeed = 5f;
         private Vector3 _movementVelocity;
+        private float _verticalVelocity;
         private PlayerInput _playerInput;
 
+        private float gravity = -20f;
         private void Awake() {
             _characterController = GetComponent<CharacterController>();
             _playerInput = GetComponent<PlayerInput>();
@@ -25,6 +27,13 @@ namespace Player {
 
         private void FixedUpdate() {
             CalculatePlayerMovement();
+
+            if (_characterController.isGrounded == false) {
+                _verticalVelocity = gravity;
+            }else {
+                _verticalVelocity = gravity * 0.3f;
+            }
+            _movementVelocity += _verticalVelocity * Vector3.up * Time.deltaTime;
             _characterController.Move(_movementVelocity);
         }
     }
