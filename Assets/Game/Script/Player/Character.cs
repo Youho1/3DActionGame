@@ -6,35 +6,28 @@ namespace Player {
     public class Character : MonoBehaviour
     {
 
-        private CharacterController _characterController;
+        protected CharacterController _characterController;
         public float MoveSpeed = 5f;
-        private Vector3 _movementVelocity;
-        private float _verticalVelocity;
-        private PlayerInput _playerInput;
+        protected Vector3 _movementVelocity;
+        protected float _verticalVelocity;
+        protected Animator _animator;
+        protected float gravity = -20f;
 
-        private float gravity = -20f;
-        private void Awake() {
+        public bool IsPlayer = true;
+
+        protected virtual void Awake() 
+        {
             _characterController = GetComponent<CharacterController>();
-            _playerInput = GetComponent<PlayerInput>();
+            _animator = GetComponent<Animator>();
         }
 
-        private void CalculatePlayerMovement() {
-            _movementVelocity.Set(_playerInput.HorizontalInput, 0f, _playerInput.VerticalInput);
-            _movementVelocity.Normalize();
-            _movementVelocity = Quaternion.Euler(0, -45f, 0) * _movementVelocity;
-            _movementVelocity *= MoveSpeed * Time.deltaTime;
-        }
-
-        private void FixedUpdate() {
-            CalculatePlayerMovement();
-
+        protected virtual void  FixedUpdate() 
+        {
             if (_characterController.isGrounded == false) {
                 _verticalVelocity = gravity;
             }else {
                 _verticalVelocity = gravity * 0.3f;
             }
-            _movementVelocity += _verticalVelocity * Vector3.up * Time.deltaTime;
-            _characterController.Move(_movementVelocity);
         }
     }
 
