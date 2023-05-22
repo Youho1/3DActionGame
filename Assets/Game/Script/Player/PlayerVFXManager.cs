@@ -8,12 +8,13 @@ namespace Player{
     {
         public VisualEffect footStep;
 
-        public void Update_FootStrp(bool state) {
+        public void Update_FootStep(bool state) {
             if (state) {
                 footStep.Play();
             }else {
                 footStep.Stop();
             }              
         }
+        
     }
 }

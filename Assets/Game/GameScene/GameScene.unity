@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1802852, g: 0.2257153, b: 0.30692378, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028481, g: 0.22571455, b: 0.3069227, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -872,11 +872,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6572561595865496312, guid: c2792d034b3f4154281cad9326455974, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 6572561595865496312, guid: c2792d034b3f4154281cad9326455974, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.9
       objectReference: {fileID: 0}
     - target: {fileID: 6572561595865496312, guid: c2792d034b3f4154281cad9326455974, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1232,6 +1232,7 @@ GameObject:
   - component: {fileID: 1088420931}
   - component: {fileID: 1088420930}
   - component: {fileID: 1088420932}
+  - component: {fileID: 1088420933}
   m_Layer: 0
   m_Name: Enemy_01
   m_TagString: Untagged
@@ -1330,6 +1331,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 2
   IsPlayer: 0
+--- !u!114 &1088420933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088420927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 966600c12483cf0479727ab4dc20ea51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FootStep: {fileID: 1417493681}
 --- !u!4 &1093166470 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -23179724915631221, guid: c8896d83481fca741b2a75c5b0715041, type: 3}
@@ -1550,6 +1564,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d0f0da05664b6844fa725f733e465f43, type: 3}
   m_PrefabInstance: {fileID: 1413497326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!2083052967 &1417493681 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 6572561595865496319, guid: c2792d034b3f4154281cad9326455974, type: 3}
+  m_PrefabInstance: {fileID: 766222971}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1435569474
 MonoBehaviour:

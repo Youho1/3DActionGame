@@ -10,7 +10,7 @@ namespace Player{
         {
             if (animator.GetComponent<PlayerVFXManager>() != null)
             {
-                animator.GetComponent<PlayerVFXManager>().Update_FootStrp(true);
+                animator.GetComponent<PlayerVFXManager>().Update_FootStep(true);
             }
         }
 
@@ -25,7 +25,7 @@ namespace Player{
         {
         if (animator.GetComponent<PlayerVFXManager>() != null)
             {
-                animator.GetComponent<PlayerVFXManager>().Update_FootStrp(false);
+                animator.GetComponent<PlayerVFXManager>().Update_FootStep(false);
             }
         }
 
