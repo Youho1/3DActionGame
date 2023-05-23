@@ -8,25 +8,27 @@ namespace Player
     {
 
         //State Machine
-        public enum PlayerState
-        {
-            Normal,
-            Attacking,
-        }
-        public PlayerState CurrentState;
 
         private PlayerInput _playerInput;
+        private Health _health;
+
+        private DamageCaster _damageCaster;
+        // Player slides
+        public float AttackSlideDuration = 0.4f;
+        public float AttackSlideSpeed = 0.06f;
         protected override void Awake()
         {
             base.Awake();
             _playerInput = GetComponent<PlayerInput>();
+            _health = GetComponent<Health>();
+            _damageCaster = GetComponentInChildren<DamageCaster>();
         }
 
         private void CalculatePlayerMovement()
         {
             if (_playerInput.MouseButtonDown && _characterController.isGrounded)
             {
-                SwitchStateTo(PlayerState.Attacking);
+                SwitchStateTo(CharacterState.Attacking);
                 return;
             }
             _movementVelocity.Set(_playerInput.HorizontalInput, 0f, _playerInput.VerticalInput);
@@ -44,10 +46,17 @@ namespace Player
         {
             switch (CurrentState)
             {
-                case PlayerState.Normal:
+                case CharacterState.Normal:
                     CalculatePlayerMovement();
                     break;
-                case PlayerState.Attacking:
+                case CharacterState.Attacking:
+                    _movementVelocity = Vector3.zero;
+                    if (Time.time < attackStartTime + AttackSlideDuration)
+                    {
+                        float timePassed = Time.time - attackStartTime;
+                        float lerpTime = timePassed / AttackSlideDuration;
+                        _movementVelocity = Vector3.Lerp(transform.forward * AttackSlideSpeed, Vector3.zero, lerpTime);
+                    }
                     break;
             }
 
@@ -56,37 +65,34 @@ namespace Player
             _characterController.Move(_movementVelocity);
         }
 
-
-        private void SwitchStateTo(PlayerState newState)
+        protected override void SwitchStateTo(CharacterState newState)
         {
-            // clear cache
             _playerInput.MouseButtonDown = false;
-            //Exiting state
-            switch (CurrentState)
-            {
-                case PlayerState.Normal:
-                    break;
-                case PlayerState.Attacking:
-                    break;
-            }
-            //Entering state
-            switch (newState)
-            {
-                case PlayerState.Normal:
-                    break;
-                case PlayerState.Attacking:
-                    _animator.SetTrigger("Attack");
-                    break;
-            }
-
-            CurrentState = newState;
-
-            Debug.Log("Switch to" + CurrentState);
+            base.SwitchStateTo(newState);
         }
 
-        public void AttackAnimationEnds()
+        protected override void AttackAnimationEnds()
         {
-            SwitchStateTo(PlayerState.Normal);
+            base.AttackAnimationEnds();
+        }
+
+        public override void ApplyDamage(int damage, Vector3 attackerPos = new Vector3())
+        {
+            if (_health != null)
+            {
+                _health.ApplyDamage(damage);
+            }
+        }
+
+
+        public void EnableDamageCaster()
+        {
+            _damageCaster.EnableDamageCaster();
+        }
+
+        public void DisableDamageCaster()
+        {
+            _damageCaster.DisableDamageCaster();
         }
     }
 }

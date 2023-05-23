@@ -3,18 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
-namespace Player{
+namespace Player
+{
     public class PlayerVFXManager : MonoBehaviour
     {
         public VisualEffect footStep;
+        public ParticleSystem Blade01;
 
-        public void Update_FootStep(bool state) {
-            if (state) {
+        public void Update_FootStep(bool state)
+        {
+            if (state)
+            {
                 footStep.Play();
-            }else {
+            }
+            else
+            {
                 footStep.Stop();
-            }              
+            }
         }
-        
+
+        public void PlayBlade01()
+        {
+            Blade01.Play();
+        }
+
     }
 }
