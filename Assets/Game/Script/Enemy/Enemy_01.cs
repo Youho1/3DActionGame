@@ -57,16 +57,8 @@ namespace Enemy
             {
                 _health.ApplyDamage(damage);
             }
-        }
 
-        public void EnableDamageCaster()
-        {
-            _damageCaster.EnableDamageCaster();
-        }
-
-        public void DisableDamageCaster()
-        {
-            _damageCaster.DisableDamageCaster();
+            GetComponent<EnemyVFXManager>().PlayBeingHitVFX(attackerPos);
         }
     }
 

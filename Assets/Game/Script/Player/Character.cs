@@ -17,6 +17,9 @@ namespace Player
         protected float attackStartTime;
         public bool IsPlayer = true;
 
+
+        protected DamageCaster _damageCaster;
+
         public enum CharacterState
         {
             Normal,
@@ -51,6 +54,10 @@ namespace Player
                 case CharacterState.Normal:
                     break;
                 case CharacterState.Attacking:
+                    if (_damageCaster != null)
+                    {
+                        DisableDamageCaster();
+                    }
                     break;
             }
             //Entering state
@@ -77,6 +84,16 @@ namespace Player
         public virtual void ApplyDamage(int damage, Vector3 attackerPos = new Vector3())
         {
 
+        }
+
+        public void EnableDamageCaster()
+        {
+            _damageCaster.EnableDamageCaster();
+        }
+
+        public void DisableDamageCaster()
+        {
+            _damageCaster.DisableDamageCaster();
         }
     }
 }

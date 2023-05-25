@@ -11,8 +11,6 @@ namespace Player
 
         private PlayerInput _playerInput;
         private Health _health;
-
-        private DamageCaster _damageCaster;
         // Player slides
         public float AttackSlideDuration = 0.4f;
         public float AttackSlideSpeed = 0.06f;
@@ -84,15 +82,5 @@ namespace Player
             }
         }
 
-
-        public void EnableDamageCaster()
-        {
-            _damageCaster.EnableDamageCaster();
-        }
-
-        public void DisableDamageCaster()
-        {
-            _damageCaster.DisableDamageCaster();
-        }
     }
 }
