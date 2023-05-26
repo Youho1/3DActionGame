@@ -22,6 +22,26 @@ namespace Player
             CurrentHealth -= damage;
             Debug.Log(gameObject.name + "took damage: " + damage);
             Debug.Log(gameObject.name + " CurrentHealth: " + CurrentHealth);
+
+            CheckHealth();
+        }
+
+        protected void CheckHealth()
+        {
+            if (CurrentHealth <= 0)
+            {
+                _character.SwitchStateTo(Character.CharacterState.Dead);
+            }
+        }
+
+        public void AddHealth(int health)
+        {
+            CurrentHealth += health;
+
+            if (CurrentHealth > MaxHealth)
+            {
+                CurrentHealth = MaxHealth;
+            }
         }
     }
 }

@@ -24,12 +24,22 @@ namespace Player
         {
             Normal,
             Attacking,
+            Dead,
+            BeingHit,
         }
         public CharacterState CurrentState;
+
+        protected MaterialPropertyBlock _materialPropertBlock;
+        protected SkinnedMeshRenderer _skinnedMeshRender;
         protected virtual void Awake()
         {
             _characterController = GetComponent<CharacterController>();
             _animator = GetComponent<Animator>();
+
+
+            _skinnedMeshRender = GetComponentInChildren<SkinnedMeshRenderer>();
+            _materialPropertBlock = new MaterialPropertyBlock();
+            _skinnedMeshRender.GetPropertyBlock(_materialPropertBlock);
         }
 
         protected virtual void FixedUpdate()
@@ -44,7 +54,7 @@ namespace Player
             }
         }
 
-        protected virtual void SwitchStateTo(CharacterState newState)
+        public virtual void SwitchStateTo(CharacterState newState)
         {
             // clear cache
 
@@ -59,6 +69,8 @@ namespace Player
                         DisableDamageCaster();
                     }
                     break;
+                case CharacterState.Dead:
+                    return;
             }
             //Entering state
             switch (newState)
@@ -68,6 +80,14 @@ namespace Player
                 case CharacterState.Attacking:
                     _animator.SetTrigger("Attack");
                     attackStartTime = Time.time;
+                    break;
+                case CharacterState.Dead:
+                    _characterController.enabled = false;
+                    _animator.SetTrigger("Dead");
+                    StartCoroutine(MaterialDissolve());
+                    break;
+                case CharacterState.BeingHit:
+                    _animator.SetTrigger("BeingHit");
                     break;
             }
 
@@ -94,6 +114,41 @@ namespace Player
         public void DisableDamageCaster()
         {
             _damageCaster.DisableDamageCaster();
+        }
+
+        protected IEnumerator MaterialBlink()
+        {
+            _materialPropertBlock.SetFloat("_blink", 0.4f);
+            _skinnedMeshRender.SetPropertyBlock(_materialPropertBlock);
+
+            yield return new WaitForSeconds(0.2f);
+
+            _materialPropertBlock.SetFloat("_blink", 0f);
+            _skinnedMeshRender.SetPropertyBlock(_materialPropertBlock);
+
+        }
+
+        protected virtual IEnumerator MaterialDissolve()
+        {
+            yield return new WaitForSeconds(2);
+
+            float dissolveTimeDuration = 2.0f;
+            float currentDissolveTime = 0;
+            float dissolveHight_start = 20f;
+            float dissolveHight_target = -10f;
+            float dissolveHight;
+
+            _materialPropertBlock.SetFloat("_enableDissolve", 1f);
+            _skinnedMeshRender.SetPropertyBlock(_materialPropertBlock);
+
+            while (currentDissolveTime < dissolveTimeDuration)
+            {
+                currentDissolveTime += Time.deltaTime;
+                dissolveHight = Mathf.Lerp(dissolveHight_start, dissolveHight_target, currentDissolveTime / dissolveTimeDuration);
+                _materialPropertBlock.SetFloat("_dissolve_height", dissolveHight);
+                _skinnedMeshRender.SetPropertyBlock(_materialPropertBlock);
+                yield return null;
+            }
         }
     }
 }

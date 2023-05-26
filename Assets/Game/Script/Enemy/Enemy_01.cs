@@ -9,7 +9,7 @@ namespace Enemy
         private UnityEngine.AI.NavMeshAgent _navMeshAgent;
         private Transform TargetPlayer;
         Health _health;
-        private DamageCaster _damageCaster;
+        public GameObject ItemToDrop;
         protected override void Awake()
         {
             base.Awake();
@@ -36,13 +36,57 @@ namespace Enemy
             }
         }
 
-        protected override void SwitchStateTo(CharacterState newState)
+        public override void SwitchStateTo(CharacterState newState)
         {
-            base.SwitchStateTo(newState);
+            //Exiting state
+            switch (CurrentState)
+            {
+                case CharacterState.Normal:
+                    break;
+                case CharacterState.Attacking:
+                    if (_damageCaster != null)
+                    {
+                        DisableDamageCaster();
+                    }
+                    break;
+                case CharacterState.Dead:
+                    return;
+
+            }
+            //Entering state
+            switch (newState)
+            {
+                case CharacterState.Normal:
+                    break;
+                case CharacterState.Attacking:
+                    _animator.SetTrigger("Attack");
+                    attackStartTime = Time.time;
+                    break;
+                case CharacterState.Dead:
+                    _characterController.enabled = false;
+                    _animator.SetTrigger("Dead");
+                    StartCoroutine(MaterialDissolve());
+                    break;
+
+            }
+
+            CurrentState = newState;
+
+            Debug.Log("Switch to" + CurrentState);
         }
         protected override void FixedUpdate()
         {
-            CalculateEnemyMovement();
+            switch (CurrentState)
+            {
+                case CharacterState.Normal:
+                    CalculateEnemyMovement();
+                    break;
+                case CharacterState.Attacking:
+                    break;
+                case CharacterState.Dead:
+                    return;
+            }
+
             base.FixedUpdate();
         }
 
@@ -59,6 +103,23 @@ namespace Enemy
             }
 
             GetComponent<EnemyVFXManager>().PlayBeingHitVFX(attackerPos);
+
+            StartCoroutine(MaterialBlink());
+        }
+
+        protected override IEnumerator MaterialDissolve()
+        {
+            yield return null;
+            StartCoroutine(base.MaterialDissolve());
+            DropItem();
+        }
+
+        public void DropItem()
+        {
+            if (ItemToDrop != null)
+            {
+                Instantiate(ItemToDrop, transform.position, Quaternion.identity);
+            }
         }
     }
 
