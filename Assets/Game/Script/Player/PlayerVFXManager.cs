@@ -10,6 +10,7 @@ namespace Player
         public VisualEffect footStep;
         public ParticleSystem Blade01;
         public VisualEffect Slash;
+        public VisualEffect Heal;
         public void Update_FootStep(bool state)
         {
             if (state)
@@ -31,6 +32,10 @@ namespace Player
         {
             Slash.transform.position = pos;
             Slash.Play();
+        }
+        public void PlayHealVFX()
+        {
+            Heal.Play();
         }
     }
 }

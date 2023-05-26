@@ -180,6 +180,7 @@ namespace Player
         private void AddHealth(int health)
         {
             _health.AddHealth(health);
+            GetComponent<PlayerVFXManager>().PlayHealVFX();
         }
 
         private void AddCoin(int coin)
