@@ -51,6 +51,9 @@ namespace Enemy
                     break;
                 case CharacterState.Dead:
                     return;
+                case CharacterState.BeingHit:
+                    break;
+
 
             }
             //Entering state
@@ -67,6 +70,10 @@ namespace Enemy
                     _animator.SetTrigger("Dead");
                     StartCoroutine(MaterialDissolve());
                     break;
+                case CharacterState.BeingHit:
+                    _animator.SetTrigger("BeingHit");
+                    break;
+
 
             }
 
@@ -85,6 +92,7 @@ namespace Enemy
                     break;
                 case CharacterState.Dead:
                     return;
+
             }
 
             base.FixedUpdate();
@@ -120,6 +128,11 @@ namespace Enemy
             {
                 Instantiate(ItemToDrop, transform.position, Quaternion.identity);
             }
+        }
+
+        private void BeingHitAnimationEnds()
+        {
+            SwitchStateTo(CharacterState.Normal);
         }
     }
 

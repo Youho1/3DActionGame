@@ -21,6 +21,8 @@ namespace Player
         public float invincibleDuration = 2f;
 
         public int Coin;
+
+        private float attackAnimationDuration;
         protected override void Awake()
         {
             base.Awake();
@@ -34,6 +36,11 @@ namespace Player
             if (_playerInput.MouseButtonDown && _characterController.isGrounded)
             {
                 SwitchStateTo(CharacterState.Attacking);
+                return;
+            }
+            else if (_playerInput.SpeaceKeyDown && _characterController.isGrounded)
+            {
+                SwitchStateTo(CharacterState.Slide);
                 return;
             }
             _movementVelocity.Set(_playerInput.HorizontalInput, 0f, _playerInput.VerticalInput);
@@ -61,6 +68,19 @@ namespace Player
                         float lerpTime = timePassed / AttackSlideDuration;
                         _movementVelocity = Vector3.Lerp(transform.forward * AttackSlideSpeed, Vector3.zero, lerpTime);
                     }
+                    if (_playerInput.MouseButtonDown && _characterController.isGrounded)
+                    {
+                        string currentClipName = _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+                        attackAnimationDuration = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
+                        if (currentClipName != "LittleAdventurerAndie_ATTACK_03" && attackAnimationDuration > 0.5f && attackAnimationDuration < 0.7f)
+                        {
+                            _playerInput.MouseButtonDown = false;
+                            SwitchStateTo(CharacterState.Attacking);
+
+                            CalculatePlayerMovement();
+                        }
+                    }
                     break;
                 case CharacterState.Dead:
                     return;
@@ -70,6 +90,9 @@ namespace Player
                         _movementVelocity = impactOnCharacter * Time.deltaTime;
                     }
                     impactOnCharacter = Vector3.Lerp(impactOnCharacter, Vector3.zero, Time.deltaTime * 5);
+                    break;
+                case CharacterState.Slide:
+                    _movementVelocity = transform.forward * SlideSpeed * Time.deltaTime;
                     break;
             }
 
@@ -81,7 +104,7 @@ namespace Player
 
         public override void SwitchStateTo(CharacterState newState)
         {
-            _playerInput.MouseButtonDown = false;
+            _playerInput.ClearCache();
             //Exiting state
             switch (CurrentState)
             {
@@ -92,6 +115,7 @@ namespace Player
                     {
                         DisableDamageCaster();
                     }
+                    GetComponent<PlayerVFXManager>().StopBlade();
                     break;
                 case CharacterState.Dead:
                     return;
@@ -117,6 +141,9 @@ namespace Player
 
                     IsInvincible = true;
                     StartCoroutine(DelayCanceInvincible());
+                    break;
+                case CharacterState.Slide:
+                    _animator.SetTrigger("Slide");
                     break;
             }
 

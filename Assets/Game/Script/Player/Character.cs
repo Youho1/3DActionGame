@@ -26,11 +26,14 @@ namespace Player
             Attacking,
             Dead,
             BeingHit,
+            Slide,
         }
         public CharacterState CurrentState;
 
         protected MaterialPropertyBlock _materialPropertBlock;
         protected SkinnedMeshRenderer _skinnedMeshRender;
+
+        public float SlideSpeed = 9f;
         protected virtual void Awake()
         {
             _characterController = GetComponent<CharacterController>();
@@ -71,6 +74,10 @@ namespace Player
                     break;
                 case CharacterState.Dead:
                     return;
+                case CharacterState.BeingHit:
+                    break;
+                case CharacterState.Slide:
+                    break;
             }
             //Entering state
             switch (newState)
@@ -88,6 +95,9 @@ namespace Player
                     break;
                 case CharacterState.BeingHit:
                     _animator.SetTrigger("BeingHit");
+                    break;
+                case CharacterState.Slide:
+                    _animator.SetTrigger("Slide");
                     break;
             }
 
@@ -149,6 +159,11 @@ namespace Player
                 _skinnedMeshRender.SetPropertyBlock(_materialPropertBlock);
                 yield return null;
             }
+        }
+
+        public void SlideAnimationEnds()
+        {
+            SwitchStateTo(CharacterState.Normal);
         }
     }
 }
