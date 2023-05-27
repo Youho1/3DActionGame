@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DamageOrb : MonoBehaviour
 {
-    public float Speed = 2f;
+    public float Speed = 8f;
     public int Damage = 10;
     public ParticleSystem HitVFX;
     private Rigidbody _rigidbody;

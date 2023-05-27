@@ -134,6 +134,14 @@ namespace Enemy
         {
             SwitchStateTo(CharacterState.Normal);
         }
+        
+        public void RotateToTarget()
+        {
+            if (CurrentState != CharacterState.Dead)
+            {
+                transform.LookAt(TargetPlayer, Vector3.up);
+            }
+        }
     }
 
 }
