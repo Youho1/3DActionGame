@@ -56,6 +56,7 @@ namespace Player
 
         protected override void FixedUpdate()
         {
+            // 状態管理（処理）
             switch (CurrentState)
             {
                 case CharacterState.Normal:
@@ -102,6 +103,7 @@ namespace Player
             _movementVelocity = Vector3.zero;
         }
 
+        // 状態管理（変換）
         public override void SwitchStateTo(CharacterState newState)
         {
             _playerInput.ClearCache();
