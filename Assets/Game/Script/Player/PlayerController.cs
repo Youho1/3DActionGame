@@ -7,22 +7,26 @@ namespace Player
     public class PlayerController : Character
     {
 
-        //State Machine
-
+        //　入力を受け取るPlayerInput型
         private PlayerInput _playerInput;
+        // HPコンポーネント
         private Health _health;
-        // Player slides
+        // １つの攻撃期間を調整
         public float AttackSlideDuration = 0.4f;
+        //　攻撃速度を調整
         public float AttackSlideSpeed = 0.06f;
-
+        // 攻撃を受けた時のインパクトの方向
         private Vector3 impactOnCharacter;
 
+        // 無敵の状態かどうか
         public bool IsInvincible;
+        // 無敵の状態になった時の期間
         public float invincibleDuration = 2f;
-
+        // コインの数
         public int Coin;
-
+        // 攻撃アニメーションの期間
         private float attackAnimationDuration;
+        // 初期化
         protected override void Awake()
         {
             base.Awake();
@@ -30,7 +34,7 @@ namespace Player
             _health = GetComponent<Health>();
             _damageCaster = GetComponentInChildren<DamageCaster>();
         }
-
+        // 移動を制御
         private void CalculatePlayerMovement()
         {
             if (_playerInput.MouseButtonDown && _characterController.isGrounded)
@@ -54,6 +58,7 @@ namespace Player
             _animator.SetBool("AirBorne", !_characterController.isGrounded);
         }
 
+        // 状態管理に（毎フーレムチェック）
         protected override void FixedUpdate()
         {
             // 状態管理（処理）
@@ -96,18 +101,22 @@ namespace Player
                     _movementVelocity = transform.forward * SlideSpeed * Time.deltaTime;
                     break;
             }
-
+            // 継承元のメソッドを呼び出す
             base.FixedUpdate();
+            // 速度を計算
             _movementVelocity += _verticalVelocity * Vector3.up * Time.deltaTime;
+            // 移動を処理
             _characterController.Move(_movementVelocity);
+            // 速度を初期化
             _movementVelocity = Vector3.zero;
         }
 
         // 状態管理（変換）
         public override void SwitchStateTo(CharacterState newState)
         {
+            // 初期化
             _playerInput.ClearCache();
-            //Exiting state
+            //Exiting state 状態から離れる時
             switch (CurrentState)
             {
                 case CharacterState.Normal:
@@ -124,7 +133,7 @@ namespace Player
                 case CharacterState.BeingHit:
                     break;
             }
-            //Entering state
+            //Entering state 状態に入る時
             switch (newState)
             {
                 case CharacterState.Normal:
@@ -149,16 +158,17 @@ namespace Player
                     break;
             }
 
+            // 現在の状態を変更
             CurrentState = newState;
 
             Debug.Log("Switch to" + CurrentState);
         }
-
+        // 攻撃アニメーションが終わったら
         protected override void AttackAnimationEnds()
         {
             base.AttackAnimationEnds();
         }
-
+        // ダメージを計算
         public override void ApplyDamage(int damage, Vector3 attackerPos = new Vector3())
         {
             if (IsInvincible)
@@ -167,19 +177,24 @@ namespace Player
             }
             if (_health != null)
             {
+                // ダメージを計算
                 _health.ApplyDamage(damage);
             }
+            // マテリアルを適用
             StartCoroutine(MaterialBlink());
+            // 状態を変更（攻撃された）
             SwitchStateTo(CharacterState.BeingHit);
+            // インパクトを追加
             AddImpact(attackerPos, 10f);
         }
 
+        // 無敵の状態から解除
         IEnumerator DelayCanceInvincible()
         {
             yield return new WaitForSeconds(invincibleDuration);
             IsInvincible = false;
         }
-
+        // ダメージを受けた時のインパクトのベクトルを計算
         private void AddImpact(Vector3 attackerPos, float force)
         {
             Vector3 impactDir = transform.position - attackerPos;
@@ -187,12 +202,12 @@ namespace Player
             impactDir.y = 0;
             impactOnCharacter = impactDir * force;
         }
-
+        // 攻撃されたアニメーションが終わったら
         private void BeingHitAnimationEnds()
         {
             SwitchStateTo(CharacterState.Normal);
         }
-
+        // アイテムを拾ったら
         public void PickUpItem(PickUp item)
         {
             switch (item.Type)
@@ -205,13 +220,13 @@ namespace Player
                     break;
             }
         }
-
+        // HPを回復する
         private void AddHealth(int health)
         {
             _health.AddHealth(health);
             GetComponent<PlayerVFXManager>().PlayHealVFX();
         }
-
+        // コインを追加
         private void AddCoin(int coin)
         {
             Coin += coin;
