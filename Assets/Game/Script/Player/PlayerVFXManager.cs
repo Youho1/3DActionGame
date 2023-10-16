@@ -13,6 +13,7 @@ namespace Player
         public ParticleSystem Blade03;
         public VisualEffect Slash;
         public VisualEffect Heal;
+        // 走る時のVFX
         public void Update_FootStep(bool state)
         {
             if (state)
@@ -24,22 +25,22 @@ namespace Player
                 footStep.Stop();
             }
         }
-
+        // ブレード１のパーティクル
         public void PlayBlade01()
         {
             Blade01.Play();
         }
-
+        // ブレード2のパーティクル
         public void PlayBlade02()
         {
             Blade02.Play();
         }
-
+        // ブレード3のパーティクル
         public void PlayBlade03()
         {
             Blade03.Play();
         }
-
+        // ブレードのパーティクルを停止
         public void StopBlade() {
             Blade01.Simulate(0);
             Blade01.Stop();
@@ -48,11 +49,13 @@ namespace Player
             Blade03.Simulate(0);
             Blade03.Stop();
         }
+        // 斬撃する時のVFX
         public void PlaySlash(Vector3 pos)
         {
             Slash.transform.position = pos;
             Slash.Play();
         }
+        // 回復する時のVFX
         public void PlayHealVFX()
         {
             Heal.Play();
