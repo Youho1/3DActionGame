@@ -10,6 +10,7 @@ namespace Enemy
         private Transform TargetPlayer;
         Health _health;
         public GameObject ItemToDrop;
+        // 初期化
         protected override void Awake()
         {
             base.Awake();
@@ -19,7 +20,7 @@ namespace Enemy
             _health = GetComponent<Health>();
             _damageCaster = GetComponentInChildren<DamageCaster>();
         }
-
+        // 移動制御
         private void CalculateEnemyMovement()
         {
             if (Vector3.Distance(TargetPlayer.position, transform.position) >= _navMeshAgent.stoppingDistance)
@@ -35,7 +36,7 @@ namespace Enemy
                 SwitchStateTo(CharacterState.Attacking);
             }
         }
-
+        // 状態遷移
         public override void SwitchStateTo(CharacterState newState)
         {
             //Exiting state
@@ -81,6 +82,7 @@ namespace Enemy
 
             Debug.Log("Switch to" + CurrentState);
         }
+        // 状態から処理
         protected override void FixedUpdate()
         {
             switch (CurrentState)
@@ -97,12 +99,12 @@ namespace Enemy
 
             base.FixedUpdate();
         }
-
+        // 攻撃アニメーションが終わったら
         protected override void AttackAnimationEnds()
         {
             base.AttackAnimationEnds();
         }
-
+        // ダメージを計算
         public override void ApplyDamage(int damage, Vector3 attackerPos = default)
         {
             if (_health != null)
@@ -114,14 +116,14 @@ namespace Enemy
 
             StartCoroutine(MaterialBlink());
         }
-
+        // 死亡時のマテリアルの制御
         protected override IEnumerator MaterialDissolve()
         {
             yield return null;
             StartCoroutine(base.MaterialDissolve());
             DropItem();
         }
-
+        // アイテムをドロップ
         public void DropItem()
         {
             if (ItemToDrop != null)
@@ -129,12 +131,12 @@ namespace Enemy
                 Instantiate(ItemToDrop, transform.position, Quaternion.identity);
             }
         }
-
+        // 攻撃されたアニメーションが終わったら
         private void BeingHitAnimationEnds()
         {
             SwitchStateTo(CharacterState.Normal);
         }
-        
+        // 目標の方向に向く
         public void RotateToTarget()
         {
             if (CurrentState != CharacterState.Dead)
