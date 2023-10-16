@@ -34,6 +34,7 @@ namespace Player
         protected SkinnedMeshRenderer _skinnedMeshRender;
 
         public float SlideSpeed = 9f;
+        // 初期化
         protected virtual void Awake()
         {
             _characterController = GetComponent<CharacterController>();
@@ -44,7 +45,7 @@ namespace Player
             _materialPropertBlock = new MaterialPropertyBlock();
             _skinnedMeshRender.GetPropertyBlock(_materialPropertBlock);
         }
-
+        // 重力制御
         protected virtual void FixedUpdate()
         {
             if (_characterController.isGrounded == false)
@@ -56,7 +57,7 @@ namespace Player
                 _verticalVelocity = gravity * 0.3f;
             }
         }
-
+        // 状態遷移
         public virtual void SwitchStateTo(CharacterState newState)
         {
             // clear cache
@@ -105,7 +106,7 @@ namespace Player
 
             Debug.Log("Switch to" + CurrentState);
         }
-
+        // 攻撃アニメーションが終わったら
         protected virtual void AttackAnimationEnds()
         {
             SwitchStateTo(CharacterState.Normal);
@@ -126,6 +127,7 @@ namespace Player
             _damageCaster.DisableDamageCaster();
         }
 
+        // 死亡時のマテリアルの制御
         protected IEnumerator MaterialBlink()
         {
             _materialPropertBlock.SetFloat("_blink", 0.4f);
@@ -137,7 +139,7 @@ namespace Player
             _skinnedMeshRender.SetPropertyBlock(_materialPropertBlock);
 
         }
-
+        // 死亡時のマテリアルの制御
         protected virtual IEnumerator MaterialDissolve()
         {
             yield return new WaitForSeconds(2);
@@ -160,7 +162,7 @@ namespace Player
                 yield return null;
             }
         }
-
+        // 攻撃された斬撃のVFXが終わったら
         public void SlideAnimationEnds()
         {
             SwitchStateTo(CharacterState.Normal);
