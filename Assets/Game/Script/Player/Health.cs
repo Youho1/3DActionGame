@@ -6,17 +6,21 @@ namespace Player
 {
     public class Health : MonoBehaviour
     {
+        // 最大のHP
         public int MaxHealth;
+        // 現在のHP
         public int CurrentHealth;
-
+        // コンポーネントにアタッチするキャラクター
         protected Character _character;
 
+        // 初期化
         protected virtual void Awake()
         {
             CurrentHealth = MaxHealth;
             _character = GetComponent<Character>();
         }
 
+        // ダメージを計算する
         public virtual void ApplyDamage(int damage)
         {
             CurrentHealth -= damage;
@@ -26,6 +30,7 @@ namespace Player
             CheckHealth();
         }
 
+        // HPをチェックし、生と死を確認する
         protected void CheckHealth()
         {
             if (CurrentHealth <= 0)
@@ -34,6 +39,7 @@ namespace Player
             }
         }
 
+        // 回復アイテムなどを拾った時に、HPを回復する
         public void AddHealth(int health)
         {
             CurrentHealth += health;
