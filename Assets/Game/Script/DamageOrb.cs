@@ -21,6 +21,7 @@ public class DamageOrb : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // 侵入したキャラクターのタイプを判定　（Player.CharacterとはPlayerフォルダのCharacter.csファイルを指す）
         Player.Character cc = other.gameObject.GetComponent<Player.Character>();
 
         if (cc != null && cc.IsPlayer)
